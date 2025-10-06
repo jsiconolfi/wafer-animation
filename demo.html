@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wafer Startup Logo Animation Demo</title>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+            display: flex;
+        }
+        
+        .nav-panel {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: black;
+            padding: 80px 20px 20px 20px;
+            z-index: 999;
+        }
+        
+        .nav-title {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .nav-item {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .brand-logo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .brand-logo:hover {
+            opacity: 1;
+        }
+        
+        .brand-logo object {
+            width: 150px;
+            height: auto;
+        }
+        
+        .brand-logo img {
+            width: 100px;
+            height: auto;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .toggle-button {
+            background: rgba(56, 56, 56, 0.881);
+            border: 1px solid rgba(243, 243, 243, 0);
+            border-radius: 12px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 100px;
+            justify-content: center;
+        }
+        
+        .toggle-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .toggle-button:active {
+            transform: scale(0.95);
+        }
+        
+        .toggle-icon {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s ease;
+        }
+        
+        /* Light mode styles */
+        body.light-mode {
+            background: white;
+            color: black;
+        }
+        
+        body.light-mode .container {
+            background: rgba(247, 247, 247, 0.8);
+            color: black;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        
+        body.light-mode .phone-mockup {
+            background: #f4f4f4;
+        }
+        
+        body.light-mode .phone-screen {
+            background: #fcfcfc;
+        }
+        
+        body.light-mode .btn {
+            background: rgba(30, 41, 59, 0.1);
+            border-color: rgba(30, 41, 59, 0.2);
+            color: black;
+        }
+        
+        body.light-mode .btn:hover {
+            background: rgba(30, 41, 59, 0.2);
+        }
+        
+        body.light-mode .info {
+            color: #475569;
+        }
+        
+        body.light-mode h1 {
+            color: black !important;
+        }
+        
+        body.light-mode .brand-logo object,
+        body.light-mode .brand-logo img {
+            filter: invert(1);
+        }
+        
+        body.light-mode .toggle-button {
+            background: rgba(30, 41, 59, 0.1);
+            border-color: rgba(30, 41, 59, 0.2);
+            color: black;
+        }
+        
+        body.light-mode .toggle-button:hover {
+            background: rgba(30, 41, 59, 0.2);
+            border-color: rgba(30, 41, 59, 0.3);
+        }
+        
+        body.light-mode .square {
+            fill: black;
+        }
+
+        body.light-mode .logo-container {
+            background: rgba(255, 255, 255, 0.189);
+        }
+        
+        body.light-mode .nav-panel {
+            background: white;
+        }
+        
+        body.light-mode .nav-title {
+            color: black;
+        }
+        
+        body.light-mode .nav-item {
+            background: rgba(30, 41, 59, 0.1);
+            border-color: rgba(30, 41, 59, 0.2);
+            color: black;
+        }
+        
+        body.light-mode .nav-item:hover {
+            background: rgba(30, 41, 59, 0.2);
+            border-color: rgba(30, 41, 59, 0.3);
+        }
+        
+        body.light-mode .nav-item.active {
+            background: rgba(30, 41, 59, 0.3);
+            border-color: rgba(30, 41, 59, 0.5);
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo-container {
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            display: inline-block;
+        }
+        
+        .logo {
+            width: 400px;
+            height: auto;
+        }
+        
+        .controls {
+            margin-top: 30px;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .info {
+            color: white;
+            margin-top: 20px;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .phone-mockup {
+            background: #1a1a1a;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 20px auto;
+            width: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .phone-screen {
+            background: #000;
+            border-radius: 15px;
+            padding: 20px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .phone-logo {
+            width: 200px;
+            height: auto;
+        }
+        
+        /* Animation styles for embedded SVG */
+        .square {
+            fill: white;
+            opacity: 0;
+            transform-origin: center;
+            animation: buildIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes buildIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Individual square delays */
+        .square-1 { animation-delay: 0s; }
+        .square-2 { animation-delay: 0.1s; }
+        .square-3 { animation-delay: 0.2s; }
+        .square-4 { animation-delay: 0.3s; }
+        .square-5 { animation-delay: 0.4s; }
+        .square-6 { animation-delay: 0.5s; }
+        .square-7 { animation-delay: 0.6s; }
+        .square-8 { animation-delay: 0.7s; }
+        .square-9 { animation-delay: 0.8s; }
+        .square-10 { animation-delay: 0.9s; }
+        .square-11 { animation-delay: 1.0s; }
+        .square-12 { animation-delay: 1.1s; }
+        .square-13 { animation-delay: 1.2s; }
+        .square-14 { animation-delay: 1.3s; }
+        
+        /* Animation restart class */
+        .restart-animation .square {
+            animation: none !important;
+        }
+        
+        .restart-animation .square {
+            animation: buildIn 0.6s ease-out forwards !important;
+        }
+        
+        /* Random animation styles */
+        .square.random {
+            fill: white;
+            opacity: 0;
+            transform-origin: center;
+            animation: circuitFlicker 0.88s ease-out forwards;
+        }
+        
+        @keyframes circuitFlicker {
+            0% {
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            40% {
+                opacity: 0;
+            }
+            60% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        body.light-mode .square.random {
+            fill: black;
+        }
+        
+        /* Tetris animation styles */
+        .square.tetris {
+            fill: white;
+            opacity: 0;
+            transform-origin: center;
+            animation: tetrisFall 0.5s ease-in forwards;
+        }
+        
+        @keyframes tetrisFall {
+            0% {
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+                transform: translateY(5px) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        body.light-mode .square.tetris {
+            fill: black;
+        }
+        
+        .animation-container {
+            display: none;
+        }
+        
+        .animation-container.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="brand-logo">
+        <object data="logo.svg" type="image/svg+xml">
+            <img src="logo.svg" alt="Brand Logo">
+        </object>
+    </div>
+    
+    <div class="nav-panel">
+        <div class="nav-item active" data-animation="sequential">Startup Logo #1</div>
+        <div class="nav-item" data-animation="random">Startup Logo #2</div>
+        <div class="nav-item" data-animation="tetris">Startup Logo #3</div>
+    </div>
+    
+    <div class="theme-toggle">
+        <button class="toggle-button" id="themeToggle">
+            <svg class="toggle-icon" id="sunIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="toggle-icon" id="moonIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <span id="themeText">Light</span>
+        </button>
+    </div>
+    
+    <div class="main-content">
+        <div class="container">
+            <div class="animation-container active" id="sequential-animation">
+                <h1 style="color: white; margin-bottom: 30px;">Startup Logo #1</h1>
+                
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <svg id="phoneLogo" width="200" height="95" viewBox="0 0 316 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="phone-logo">
+                            <path d="M149.582 124.645L124.653 149.573L99.7246 124.645L124.653 99.7158L149.582 124.645Z" class="square square-1"/>
+                            <path d="M215.632 124.645L190.703 149.573L165.773 124.645L190.703 99.7158L215.632 124.645Z" class="square square-2"/>
+                            <path d="M116.34 91.4062L91.4102 116.335L66.4814 91.4062L91.4102 66.4766L116.34 91.4062Z" class="square square-3"/>
+                            <path d="M157.887 116.335L157.677 116.125L157.468 116.335L132.539 91.4062L157.468 66.4766L157.677 66.6855L157.887 66.4766L182.815 91.4062Z" class="square square-4"/>
+                            <path d="M248.873 91.4062L223.944 116.335L199.016 91.4062L223.944 66.4766L248.873 91.4062Z" class="square square-5"/>
+                            <path d="M83.0996 58.168L58.1709 83.0967L33.2412 58.168L58.1709 33.2393L83.0996 58.168Z" class="square square-6"/>
+                            <path d="M149.583 58.168L124.654 83.0967L99.7256 58.168L124.654 33.2383L149.583 58.168Z" class="square square-7"/>
+                            <path d="M215.633 58.168L190.703 83.0967L165.774 58.168L190.703 33.2383L215.633 58.168Z" class="square square-8"/>
+                            <path d="M282.118 58.168L257.189 83.0967L232.261 58.168L257.189 33.2393L282.118 58.168Z" class="square square-9"/>
+                            <path d="M49.8574 24.9287L24.9287 49.8574L0 24.9287L24.9287 0L49.8574 24.9287Z" class="square square-10"/>
+                            <path d="M116.334 24.9287L91.4053 49.8574L66.4766 24.9287L91.4053 0L116.334 24.9287Z" class="square square-11"/>
+                            <path d="M182.397 24.9287L157.469 49.8574L132.54 24.9287L157.469 0L182.397 24.9287Z" class="square square-12"/>
+                            <path d="M248.881 24.9287L223.952 49.8574L199.023 24.9287L223.952 0L248.881 24.9287Z" class="square square-13"/>
+                            <path d="M315.357 24.9287L290.429 49.8574L265.5 24.9287L290.429 0L315.357 24.9287Z" class="square square-14"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="logo-container">
+                    <svg id="mainLogo" width="400" height="190" viewBox="0 0 316 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo">
+                        <path d="M149.582 124.645L124.653 149.573L99.7246 124.645L124.653 99.7158L149.582 124.645Z" class="square square-1"/>
+                        <path d="M215.632 124.645L190.703 149.573L165.773 124.645L190.703 99.7158L215.632 124.645Z" class="square square-2"/>
+                        <path d="M116.34 91.4062L91.4102 116.335L66.4814 91.4062L91.4102 66.4766L116.34 91.4062Z" class="square square-3"/>
+                        <path d="M157.887 116.335L157.677 116.125L157.468 116.335L132.539 91.4062L157.468 66.4766L157.677 66.6855L157.887 66.4766L182.815 91.4062Z" class="square square-4"/>
+                        <path d="M248.873 91.4062L223.944 116.335L199.016 91.4062L223.944 66.4766L248.873 91.4062Z" class="square square-5"/>
+                        <path d="M83.0996 58.168L58.1709 83.0967L33.2412 58.168L58.1709 33.2393L83.0996 58.168Z" class="square square-6"/>
+                        <path d="M149.583 58.168L124.654 83.0967L99.7256 58.168L124.654 33.2383L149.583 58.168Z" class="square square-7"/>
+                        <path d="M215.633 58.168L190.703 83.0967L165.774 58.168L190.703 33.2383L215.633 58.168Z" class="square square-8"/>
+                        <path d="M282.118 58.168L257.189 83.0967L232.261 58.168L257.189 33.2393L282.118 58.168Z" class="square square-9"/>
+                        <path d="M49.8574 24.9287L24.9287 49.8574L0 24.9287L24.9287 0L49.8574 24.9287Z" class="square square-10"/>
+                        <path d="M116.334 24.9287L91.4053 49.8574L66.4766 24.9287L91.4053 0L116.334 24.9287Z" class="square square-11"/>
+                        <path d="M182.397 24.9287L157.469 49.8574L132.54 24.9287L157.469 0L182.397 24.9287Z" class="square square-12"/>
+                        <path d="M248.881 24.9287L223.952 49.8574L199.023 24.9287L223.952 0L248.881 24.9287Z" class="square square-13"/>
+                        <path d="M315.357 24.9287L290.429 49.8574L265.5 24.9287L290.429 0L315.357 24.9287Z" class="square square-14"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="animation-container" id="random-animation">
+                <h1 style="color: white; margin-bottom: 30px;">Startup Logo #2</h1>
+                
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <svg id="phoneLogoRandom" width="200" height="95" viewBox="0 0 316 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="phone-logo">
+                            <path d="M149.582 124.645L124.653 149.573L99.7246 124.645L124.653 99.7158L149.582 124.645Z" class="square random" data-index="0"/>
+                            <path d="M215.632 124.645L190.703 149.573L165.773 124.645L190.703 99.7158L215.632 124.645Z" class="square random" data-index="1"/>
+                            <path d="M116.34 91.4062L91.4102 116.335L66.4814 91.4062L91.4102 66.4766L116.34 91.4062Z" class="square random" data-index="2"/>
+                            <path d="M157.887 116.335L157.677 116.125L157.468 116.335L132.539 91.4062L157.468 66.4766L157.677 66.6855L157.887 66.4766L182.815 91.4062Z" class="square random" data-index="3"/>
+                            <path d="M248.873 91.4062L223.944 116.335L199.016 91.4062L223.944 66.4766L248.873 91.4062Z" class="square random" data-index="4"/>
+                            <path d="M83.0996 58.168L58.1709 83.0967L33.2412 58.168L58.1709 33.2393L83.0996 58.168Z" class="square random" data-index="5"/>
+                            <path d="M149.583 58.168L124.654 83.0967L99.7256 58.168L124.654 33.2383L149.583 58.168Z" class="square random" data-index="6"/>
+                            <path d="M215.633 58.168L190.703 83.0967L165.774 58.168L190.703 33.2383L215.633 58.168Z" class="square random" data-index="7"/>
+                            <path d="M282.118 58.168L257.189 83.0967L232.261 58.168L257.189 33.2393L282.118 58.168Z" class="square random" data-index="8"/>
+                            <path d="M49.8574 24.9287L24.9287 49.8574L0 24.9287L24.9287 0L49.8574 24.9287Z" class="square random" data-index="9"/>
+                            <path d="M116.334 24.9287L91.4053 49.8574L66.4766 24.9287L91.4053 0L116.334 24.9287Z" class="square random" data-index="10"/>
+                            <path d="M182.397 24.9287L157.469 49.8574L132.54 24.9287L157.469 0L182.397 24.9287Z" class="square random" data-index="11"/>
+                            <path d="M248.881 24.9287L223.952 49.8574L199.023 24.9287L223.952 0L248.881 24.9287Z" class="square random" data-index="12"/>
+                            <path d="M315.357 24.9287L290.429 49.8574L265.5 24.9287L290.429 0L315.357 24.9287Z" class="square random" data-index="13"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="logo-container">
+                    <svg id="mainLogoRandom" width="400" height="190" viewBox="0 0 316 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo">
+                        <path d="M149.582 124.645L124.653 149.573L99.7246 124.645L124.653 99.7158L149.582 124.645Z" class="square random" data-index="0"/>
+                        <path d="M215.632 124.645L190.703 149.573L165.773 124.645L190.703 99.7158L215.632 124.645Z" class="square random" data-index="1"/>
+                        <path d="M116.34 91.4062L91.4102 116.335L66.4814 91.4062L91.4102 66.4766L116.34 91.4062Z" class="square random" data-index="2"/>
+                        <path d="M157.887 116.335L157.677 116.125L157.468 116.335L132.539 91.4062L157.468 66.4766L157.677 66.6855L157.887 66.4766L182.815 91.4062Z" class="square random" data-index="3"/>
+                        <path d="M248.873 91.4062L223.944 116.335L199.016 91.4062L223.944 66.4766L248.873 91.4062Z" class="square random" data-index="4"/>
+                        <path d="M83.0996 58.168L58.1709 83.0967L33.2412 58.168L58.1709 33.2393L83.0996 58.168Z" class="square random" data-index="5"/>
+                        <path d="M149.583 58.168L124.654 83.0967L99.7256 58.168L124.654 33.2383L149.583 58.168Z" class="square random" data-index="6"/>
+                        <path d="M215.633 58.168L190.703 83.0967L165.774 58.168L190.703 33.2383L215.633 58.168Z" class="square random" data-index="7"/>
+                        <path d="M282.118 58.168L257.189 83.0967L232.261 58.168L257.189 33.2393L282.118 58.168Z" class="square random" data-index="8"/>
+                        <path d="M49.8574 24.9287L24.9287 49.8574L0 24.9287L24.9287 0L49.8574 24.9287Z" class="square random" data-index="9"/>
+                        <path d="M116.334 24.9287L91.4053 49.8574L66.4766 24.9287L91.4053 0L116.334 24.9287Z" class="square random" data-index="10"/>
+                        <path d="M182.397 24.9287L157.469 49.8574L132.54 24.9287L157.469 0L182.397 24.9287Z" class="square random" data-index="11"/>
+                        <path d="M248.881 24.9287L223.952 49.8574L199.023 24.9287L223.952 0L248.881 24.9287Z" class="square random" data-index="12"/>
+                        <path d="M315.357 24.9287L290.429 49.8574L265.5 24.9287L290.429 0L315.357 24.9287Z" class="square random" data-index="13"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="animation-container" id="tetris-animation">
+                <h1 style="color: white; margin-bottom: 30px;">Startup Logo #3</h1>
+                
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <svg id="phoneLogoTetris" width="200" height="95" viewBox="0 0 316 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="phone-logo">
+                            <path d="M149.582 124.645L124.653 149.573L99.7246 124.645L124.653 99.7158L149.582 124.645Z" class="square tetris" data-row="4"/>
+                            <path d="M215.632 124.645L190.703 149.573L165.773 124.645L190.703 99.7158L215.632 124.645Z" class="square tetris" data-row="4"/>
+                            <path d="M116.34 91.4062L91.4102 116.335L66.4814 91.4062L91.4102 66.4766L116.34 91.4062Z" class="square tetris" data-row="3"/>
+                            <path d="M157.887 116.335L157.677 116.125L157.468 116.335L132.539 91.4062L157.468 66.4766L157.677 66.6855L157.887 66.4766L182.815 91.4062Z" class="square tetris" data-row="3"/>
+                            <path d="M248.873 91.4062L223.944 116.335L199.016 91.4062L223.944 66.4766L248.873 91.4062Z" class="square tetris" data-row="3"/>
+                            <path d="M83.0996 58.168L58.1709 83.0967L33.2412 58.168L58.1709 33.2393L83.0996 58.168Z" class="square tetris" data-row="2"/>
+                            <path d="M149.583 58.168L124.654 83.0967L99.7256 58.168L124.654 33.2383L149.583 58.168Z" class="square tetris" data-row="2"/>
+                            <path d="M215.633 58.168L190.703 83.0967L165.774 58.168L190.703 33.2383L215.633 58.168Z" class="square tetris" data-row="2"/>
+                            <path d="M282.118 58.168L257.189 83.0967L232.261 58.168L257.189 33.2393L282.118 58.168Z" class="square tetris" data-row="2"/>
+                            <path d="M49.8574 24.9287L24.9287 49.8574L0 24.9287L24.9287 0L49.8574 24.9287Z" class="square tetris" data-row="1"/>
+                            <path d="M116.334 24.9287L91.4053 49.8574L66.4766 24.9287L91.4053 0L116.334 24.9287Z" class="square tetris" data-row="1"/>
+                            <path d="M182.397 24.9287L157.469 49.8574L132.54 24.9287L157.469 0L182.397 24.9287Z" class="square tetris" data-row="1"/>
+                            <path d="M248.881 24.9287L223.952 49.8574L199.023 24.9287L223.952 0L248.881 24.9287Z" class="square tetris" data-row="1"/>
+                            <path d="M315.357 24.9287L290.429 49.8574L265.5 24.9287L290.429 0L315.357 24.9287Z" class="square tetris" data-row="1"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="logo-container">
+                    <svg id="mainLogoTetris" width="400" height="190" viewBox="0 0 316 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo">
+                        <path d="M149.582 124.645L124.653 149.573L99.7246 124.645L124.653 99.7158L149.582 124.645Z" class="square tetris" data-row="4"/>
+                        <path d="M215.632 124.645L190.703 149.573L165.773 124.645L190.703 99.7158L215.632 124.645Z" class="square tetris" data-row="4"/>
+                        <path d="M116.34 91.4062L91.4102 116.335L66.4814 91.4062L91.4102 66.4766L116.34 91.4062Z" class="square tetris" data-row="3"/>
+                        <path d="M157.887 116.335L157.677 116.125L157.468 116.335L132.539 91.4062L157.468 66.4766L157.677 66.6855L157.887 66.4766L182.815 91.4062Z" class="square tetris" data-row="3"/>
+                        <path d="M248.873 91.4062L223.944 116.335L199.016 91.4062L223.944 66.4766L248.873 91.4062Z" class="square tetris" data-row="3"/>
+                        <path d="M83.0996 58.168L58.1709 83.0967L33.2412 58.168L58.1709 33.2393L83.0996 58.168Z" class="square tetris" data-row="2"/>
+                        <path d="M149.583 58.168L124.654 83.0967L99.7256 58.168L124.654 33.2383L149.583 58.168Z" class="square tetris" data-row="2"/>
+                        <path d="M215.633 58.168L190.703 83.0967L165.774 58.168L190.703 33.2383L215.633 58.168Z" class="square tetris" data-row="2"/>
+                        <path d="M282.118 58.168L257.189 83.0967L232.261 58.168L257.189 33.2393L282.118 58.168Z" class="square tetris" data-row="2"/>
+                        <path d="M49.8574 24.9287L24.9287 49.8574L0 24.9287L24.9287 0L49.8574 24.9287Z" class="square tetris" data-row="1"/>
+                        <path d="M116.334 24.9287L91.4053 49.8574L66.4766 24.9287L91.4053 0L116.334 24.9287Z" class="square tetris" data-row="1"/>
+                        <path d="M182.397 24.9287L157.469 49.8574L132.54 24.9287L157.469 0L182.397 24.9287Z" class="square tetris" data-row="1"/>
+                        <path d="M248.881 24.9287L223.952 49.8574L199.023 24.9287L223.952 0L248.881 24.9287Z" class="square tetris" data-row="1"/>
+                        <path d="M315.357 24.9287L290.429 49.8574L265.5 24.9287L290.429 0L315.357 24.9287Z" class="square tetris" data-row="1"/>
+                    </svg>
+                </div>
+            </div>
+        
+        <div class="controls">
+            <button class="btn" id="restartBtn">Restart Animation</button>
+            <button class="btn" id="loopBtn">Start Loop</button>
+        </div>
+        
+       
+    </div>
+
+    <script>
+        let isLooping = false;
+        let animationInterval = null;
+        
+        function restartAnimation() {
+            console.log('Restart animation clicked');
+            const svgElements = document.querySelectorAll('#phoneLogo, #mainLogo');
+            
+            svgElements.forEach(svg => {
+                console.log('Processing SVG:', svg.id);
+                
+                // Get all squares in this SVG
+                const squares = svg.querySelectorAll('.square');
+                console.log('Found squares:', squares.length);
+                
+                // Reset all squares to initial state
+                squares.forEach(square => {
+                    square.style.animation = 'none';
+                    square.style.opacity = '0';
+                    square.style.transform = 'scale(0)';
+                });
+                
+                // Force reflow
+                svg.offsetHeight;
+                
+                // Restart animation for each square
+                squares.forEach((square, index) => {
+                    setTimeout(() => {
+                        square.style.animation = `buildIn 0.6s ease-out forwards`;
+                        square.style.animationDelay = `${index * 0.1}s`;
+                    }, 10);
+                });
+            });
+        }
+        
+        function toggleLoop() {
+            console.log('Toggle loop clicked, current state:', isLooping);
+            isLooping = !isLooping;
+            const loopBtn = document.getElementById('loopBtn');
+            
+            if (isLooping) {
+                loopBtn.textContent = 'Stop Loop';
+                console.log('Starting loop');
+                // Start auto-restart loop
+                if (animationInterval) {
+                    clearInterval(animationInterval);
+                }
+                animationInterval = setInterval(restartAnimation, 3000);
+            } else {
+                loopBtn.textContent = 'Start Loop';
+                console.log('Stopping loop');
+                // Stop auto-restart loop
+                if (animationInterval) {
+                    clearInterval(animationInterval);
+                    animationInterval = null;
+                }
+            }
+        }
+        
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
+            const themeText = document.getElementById('themeText');
+            
+            if (body.classList.contains('light-mode')) {
+                // Switch to dark mode
+                body.classList.remove('light-mode');
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+                themeText.textContent = 'Light';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                // Switch to light mode
+                body.classList.add('light-mode');
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Initialize theme from localStorage
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
+            const themeText = document.getElementById('themeText');
+            
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+                themeText.textContent = 'Dark';
+            } else {
+                body.classList.remove('light-mode');
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+                themeText.textContent = 'Light';
+            }
+        }
+        
+        // Navigation functionality
+        function switchAnimation(animationType) {
+            // Hide all animation containers
+            document.querySelectorAll('.animation-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected animation container
+            document.getElementById(animationType + '-animation').classList.add('active');
+            
+            // Add active class to clicked nav item
+            document.querySelector(`[data-animation="${animationType}"]`).classList.add('active');
+            
+            // Reset any running loops
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+                const loopBtn = document.getElementById('loopBtn');
+                loopBtn.textContent = 'Start Loop';
+                isLooping = false;
+            }
+        }
+        
+        // Random animation function
+        function startRandomAnimation() {
+            const activeContainer = document.querySelector('.animation-container.active');
+            const svgs = activeContainer.querySelectorAll('svg');
+            
+            svgs.forEach(svg => {
+                const squares = svg.querySelectorAll('.square.random');
+                squares.forEach(square => {
+                    square.style.animation = 'none';
+                    square.style.opacity = '0';
+                });
+                
+                // Force reflow
+                svg.offsetHeight;
+                
+                // Create random order
+                const indices = Array.from({length: squares.length}, (_, i) => i);
+                for (let i = indices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+                
+                // Animate squares with circuit-like firing pattern
+                indices.forEach((index, i) => {
+                    // More deliberate timing - some circuits fire quickly, others with longer delays
+                    // Creates clusters of activity like real electrical circuits
+                    const baseDelay = i * 50; // Base timing
+                    const randomVariation = Math.random() * 150; // Random variation
+                    const clusterBonus = Math.random() < 0.3 ? 0 : Math.random() * 200; // Some squares fire in clusters
+                    
+                    const totalDelay = baseDelay + randomVariation + clusterBonus;
+                    
+                    setTimeout(() => {
+                        squares[index].style.animation = 'circuitFlicker 0.88s ease-out forwards';
+                    }, totalDelay);
+                });
+            });
+        }
+        
+        // Tetris animation function
+        function startTetrisAnimation() {
+            const activeContainer = document.querySelector('.animation-container.active');
+            const svgs = activeContainer.querySelectorAll('svg');
+            
+            svgs.forEach(svg => {
+                const squares = svg.querySelectorAll('.square.tetris');
+                squares.forEach(square => {
+                    square.style.animation = 'none';
+                    square.style.opacity = '0';
+                    square.style.transform = 'translateY(-50px) scale(0.8)';
+                });
+                
+                // Force reflow
+                svg.offsetHeight;
+                
+                // Completely random timing - no row structure
+                squares.forEach((square, index) => {
+                    // Completely random delay (0-2000ms)
+                    const randomDelay = Math.random() * 2000;
+                    
+                    // Random fall speed (200-800ms)
+                    const fallSpeed = 200 + Math.random() * 600;
+                    
+                    // Random starting height (some fall from higher)
+                    const randomHeight = -30 - Math.random() * 40; // -30 to -70px
+                    
+                    setTimeout(() => {
+                        // Set random starting height
+                        square.style.transform = `translateY(${randomHeight}px) scale(0.8)`;
+                        
+                        // Create dynamic animation with random values
+                        const animation = `tetrisFall ${fallSpeed}ms ease-in forwards`;
+                        square.style.animation = animation;
+                    }, randomDelay);
+                });
+            });
+        }
+        
+        // Updated restart animation function
+        function restartAnimation() {
+            const activeContainer = document.querySelector('.animation-container.active');
+            const animationType = activeContainer.id;
+            
+            if (animationType === 'random-animation') {
+                startRandomAnimation();
+            } else if (animationType === 'tetris-animation') {
+                startTetrisAnimation();
+            } else {
+                const svgElements = activeContainer.querySelectorAll('svg');
+                svgElements.forEach(svg => {
+                    const squares = svg.querySelectorAll('.square:not(.random):not(.tetris)');
+                    squares.forEach(square => {
+                        square.style.animation = 'none';
+                        square.style.opacity = '0';
+                        square.style.transform = 'scale(0)';
+                    });
+                    
+                    svg.offsetHeight;
+                    
+                    squares.forEach((square, index) => {
+                        setTimeout(() => {
+                            square.style.animation = `buildIn 0.6s ease-out forwards`;
+                            square.style.animationDelay = `${index * 0.1}s`;
+                        }, 10);
+                    });
+                });
+            }
+        }
+        
+        // Add event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing buttons');
+            
+            // Initialize theme
+            initializeTheme();
+            
+            const restartBtn = document.getElementById('restartBtn');
+            const loopBtn = document.getElementById('loopBtn');
+            const themeToggle = document.getElementById('themeToggle');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            console.log('Buttons found:', { restartBtn: !!restartBtn, loopBtn: !!loopBtn, themeToggle: !!themeToggle });
+            
+            // Navigation event listeners
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const animationType = this.getAttribute('data-animation');
+                    console.log('Navigation clicked:', animationType);
+                    switchAnimation(animationType);
+                });
+            });
+            
+            if (restartBtn) {
+                restartBtn.addEventListener('click', function(e) {
+                    console.log('Restart button clicked');
+                    e.preventDefault();
+                    restartAnimation();
+                });
+                console.log('Restart button listener added');
+            }
+            
+            if (loopBtn) {
+                loopBtn.addEventListener('click', function(e) {
+                    console.log('Loop button clicked');
+                    e.preventDefault();
+                    toggleLoop();
+                });
+                console.log('Loop button listener added');
+            }
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function(e) {
+                    console.log('Theme toggle clicked');
+                    e.preventDefault();
+                    toggleTheme();
+                });
+                console.log('Theme toggle listener added');
+            }
+            
+            // Test that the SVGs are found
+            const svgs = document.querySelectorAll('svg');
+            console.log('SVGs found:', svgs.length);
+        });
+    </script>
+</body>
+</html>
